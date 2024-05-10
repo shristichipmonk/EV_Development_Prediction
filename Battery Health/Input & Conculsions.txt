@@ -1,0 +1,89 @@
+Introduction:
+In this notebook, I have pre-processed ,analyzed, detected and treated several anomalies/outliers using multiple techniques on the battery charge / discharge dataset obtained from NASA.
+I have used 5 most widely used anomalies/outliers detection techniques such as:
+IQR based
+DBSCAN (density based)
+Isolation Forest
+Local Outlier Factor (LOF)
+Elliptical Envelope
+
+
+
+Data Dictionary:
+Voltage_measured: Battery terminal voltage (Volts)
+Current_measured: Battery output current (Amps)
+Temperature_measured: Battery temperature (degree C)
+Current_load: Current measured at load (Amps)
+Voltage_load: Voltage measured at load (Volts)
+Time: Time vector for the cycle (seconds)
+Capacity: Battery capacity (Ahr) for discharge till 2.7V
+Datetime: the date and time of the start of the cycle
+Ambient_temperature: Temperature in which the Battery is stored (degree C)
+Cycle: Charge cycle of the Battery
+
+
+
+Data Description:
+A set of four Battery (# 5, 6, 7 and 18) were run through 2 different operational profiles (charge& discharge) at room temperature. Charging was carried out in a constant current (CC) mode at 1.5A until the Battery voltage reached 4.2V and then continued in a constant voltage (CV) mode until the charge current dropped to 20mA. Discharge was carried out at a constant current (CC) level of 2A until the battery voltage fell to 2.7V, 2.5V, 2.2V and 2.5V for Battery 5 6 7 and 18 respectively.
+
+Repeated charge and discharge cycles result in accelerated aging of the Battery. The experiments were stopped when the Fuel cell reached end-of-life (EOL) criteria, which was a 30% fade in rated capacity (from 2Ahr to 1.4Ahr).
+
+This data can be further used for the prediction of both remaining charge (for a given discharge cycle) and remaining useful life (RUL).
+Files:
+B0005.mat Data for Battery #5
+B0006.mat Data for Battery #6
+B0007.mat Data for Battery #7
+B0018.mat Data for Battery #18
+
+
+
+Comparison of results from the above algorithms:¶
+I have tried 5 methods for anamoly detection:
+IQR based
+DBSCAN (density based)
+Isolation Forest ()
+Local Outlier Factor (LOF)
+Elliptical Envelope
+
+1. IQR based
+As we have see, total 37,766 datapoints (20.13% data) are tagged as outliers using IQR based method.
+This data is huge and might contain some useful information as well, so it's better to treat/ detect outliers with some robust and SOTA methods of anomaly detection. ( worst performer )
+2. DBSCAN (density based)
+With proper hit and trial for finding the best hyperparameters (eps and minpts) I got eps = 0.5, min_samples = 200. With this, I was able to detect 8009 datapoints as outliers. Have validated visually in lower dimension with above hyperparameters.
+3. Isolation Forest
+Anomalies with contamination 1%, 2%, 3%, 4% are 1858, 3716, 5573, 7431 respectievly.
+Even with the least contamination %, we are able to get the exact no. of outliers which I have validated visually in lower dimension with different different set of features.
+However, as per the subject matter expert we can still get it validated if certain points are anamlalies or not, but we are getting good match.
+We can easily further classify the outliers into good, average and extreme anaamloes.
+As we go on increasing the contamination %, we are getting more number of datapoints classified as extreme outliers.
+4. Local Outlier Factor (LOF)
+In LOF, the hypermeters used are n_neighbors = [5, 20] and contamination_ = [0.01,0.04].
+Almost 7429 datapoints are getting classified as outliers using maximum nearest neigbors (20) and with higesht contamination percentage of 4%.
+I have validated visually in lower dimension with above hyperparameters but the performance is less acuurate than Isolation Forest but more accurate than other methods.
+With least nearest neigbors and least contamination percentage, we are getting less no. of outliers specifically in the mid-battery capacity range (1.4-1.6) having least and maximum temperature measured. This can be informed to subject matter expert and thus can be validated before removal.
+Along with extreme endpoints, the mid level inliers are also considered as outliers upon increasing contamination% upto 4% in bivariate analysis of temperature vs capacity
+5. Elliptical Envelope
+Providing contamination as hyperparametr, we are able to get 18387 data points labelled (-1) i.e outliers.
+Along with extreme endpoints, the mid level inliers are also considered as outliers even in lower contamination% of 1 % in bivariate analysis of temperature vs capacity
+
+Final performance conclusions:
+Isolation Forest >> Local Outlier Factor (LOF) > DBSCAN (density based) > Elliptical Envelope >> IQR based
+
+Actionable Insights & Recommendations:
+1. Capacity of batteries decrease as no. of cycles of battery usage increases. Also Capacity decreases over a period of time.
+2. Battery B0006 (2) is having the largest capacity when it's new. Whereas B0018 and B0007 is having the least capacity when it's unused.
+3. Over a period of time, B0006 shows much more deteriorating trend than others , whereas B0007 has the most efficient capacity. Also, Battery (B0006) with flag 2 has max no. of outliers. This might be the primary reason for Battery 2's worst performance. The classified anamolous datapoints should be highlighted to the management after required scrutiny from SMEs and thus the team can take proper action on improvement with given feature's values.
+4. There hasn't been a continuos testing of charging of batteries throught the cycle. First three batteries (5,6,7) have been charged/tested synchronously whereas the 4th battery (B0018) is charged/tested post July 2008 with couple of breaks in between.
+5. The general trend is more or less the same which is as time of battery's cycle charging decreases over a period of time.
+6. We can clearly see that, Battery (B0018) has been launched recently and is having average capacity over time.
+7. Capacity of Battery B0002 deteriorates the most over time whereas for blue it's most efficient in terms of capacity over a period of time.
+8. As time to charge the batteries is increasing, the capacity is also increasing on an average for all four batteries
+9. As time increases for batteries, the depreciation increases because, temeperature_measured increases in every cycle of charging.
+10. Batteries with much higher capacities and much lower capacities but having minimum temperature measured are having most critical number of outliers. These can be checked with subject matter expert and then the NASA team can work upon finding the exact root cause behind this behaviour
+11. On an average, The batteries with least temperature measured are having more number of outliers.
+12. Batteries datapoints which are producing maximum voltages with barely minimum charging time are ceratinly outliers/anamolies.
+13. Also, with least contamination, the Batteries datapoints which requires maximum time to charge ceratinly outliers/anamolies.
+14. As it's clearly visible , if we increase the contamination % of outliers to 4 % , it's able to classify the visually seen anamolies as outliers as compared to contamionation of 1 %
+15. Also, with max contamination of 4%, the Batteries datapoints which requires maximum time to charge and whose voltages are low are ceratinly outliers/anamolies.
+16. As we go on increase the contamination %, we are getting more number of datapoints classified as extreme outliers.
+17. With least nearest neigbors and least contamination percentage, we are getting less no. of outliers specifically in the mid-battery capacity range (1.4-1.6) having least and maximum temperature measured. This can be informed to subject matter expert and thus can be validated before removal.

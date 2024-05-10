@@ -1,0 +1,3 @@
+Model Training: A neural network model underwent training for 100 epochs, resulting in a mean squared error (MSE) of 0.6259 and a mean absolute error (MAE) of 0.3258. Additionally, random forest were trained, with their respective MSE and MAE values recorded are 0.0046 & 0.046 and XGBoost were trained, with their respective MSE and MAE values recorded are 0.51 & 0.5109.
+
+Model Evaluation: R-squared values were calculated for each model to assess their performance. The neural network achieved an R-squared of 0.994, indicating a strong fit to the data. The random forest model outperformed the neural network with an exceptionally high R-squared of 0.9999, while the XGBoost model demonstrated a slightly lower but still impressive R-squared value of 0.9950.
